@@ -107,15 +107,15 @@ void Game::LoadLevel(int level) {
     // Create an entity
     Entity tank = m_registry->CreateEntity();
     tank.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0),
-                                          glm::vec2(5.0, 5.0), 0.0);
+                                          glm::vec2(1.0, 1.0), 0.0);
     tank.AddComponent<RigidBodyComponent>(glm::vec2(40.0, 0.0));
-    tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);
+    tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 1);
 
     Entity truck = m_registry->CreateEntity();
     truck.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0),
-                                           glm::vec2(5.0, 5.0), 0.0);
+                                           glm::vec2(1.0, 1.0), 0.0);
     truck.AddComponent<RigidBodyComponent>(glm::vec2(20.0, 0.0));
-    truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
+    truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 2);
 }
 
 void Game::Setup() { LoadLevel(1); }

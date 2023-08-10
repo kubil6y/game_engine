@@ -10,10 +10,10 @@ AssetStore::~AssetStore() {
 }
 
 void AssetStore::ClearAssets() {
-    for (auto texture : textures) {
+    for (auto texture : m_textures) {
         SDL_DestroyTexture(texture.second);
     }
-    textures.clear();
+    m_textures.clear();
 }
 
 void AssetStore::AddTexture(SDL_Renderer* renderer, const std::string& assetId,
@@ -23,11 +23,11 @@ void AssetStore::AddTexture(SDL_Renderer* renderer, const std::string& assetId,
     SDL_FreeSurface(surface);
 
     // Add the texture to the map
-    textures.emplace(assetId, texture);
+    m_textures.emplace(assetId, texture);
 
     Logger::Log("Texture added to the AssetStore with id " + assetId);
 }
 
 SDL_Texture* AssetStore::GetTexture(const std::string& assetId) {
-    return textures[assetId];
+    return m_textures[assetId];
 }
