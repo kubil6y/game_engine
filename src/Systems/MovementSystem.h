@@ -16,11 +16,10 @@ public:
         // Loop all entities that the system is interested in
         for (auto entity : GetSystemEntities()) {
             // Update entity position based on its velocity
-            auto&      transform = entity.GetComponent<TransformComponent>();
-            const auto rigidbody = entity.GetComponent<RigidBodyComponent>();
+            auto&      tf = entity.GetComponent<TransformComponent>();
+            const auto rb = entity.GetComponent<RigidBodyComponent>();
 
-            transform.position.x += rigidbody.velocity.x * deltaTime;
-            transform.position.y += rigidbody.velocity.y * deltaTime;
+            tf.position += rb.velocity * static_cast<float>(deltaTime);
         }
     }
 };
