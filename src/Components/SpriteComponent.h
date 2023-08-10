@@ -1,5 +1,5 @@
-#ifndef SPRITECOMPONENT_H
-#define SPRITECOMPONENT_H
+#ifndef SPRITE_COMPONENT_H
+#define SPRITE_COMPONENT_H
 
 #include <SDL2/SDL.h>
 #include <string>
@@ -21,4 +21,4 @@ struct SpriteComponent {
     }
 };
 
-#endif
+#endif // !SPRITE_COMPONENT_H

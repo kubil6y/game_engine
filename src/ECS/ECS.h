@@ -300,4 +300,4 @@ TComponent& Entity::GetComponent() const {
     return registry->GetComponent<TComponent>(*this);
 }
 
-#endif
+#endif // !ECS_H

@@ -1,5 +1,5 @@
-#ifndef ASSETSTORE_H
-#define ASSETSTORE_H
+#ifndef ASSET_STORE_H
+#define ASSET_STORE_H
 
 #include <SDL2/SDL.h>
 #include <map>
@@ -21,4 +21,4 @@ public:
     SDL_Texture* GetTexture(const std::string& assetId);
 };
 
-#endif
+#endif // !ASSET_STORE_H

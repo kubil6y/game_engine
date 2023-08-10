@@ -18,4 +18,4 @@ public:
     static void                  Err(const std::string& message);
 };
 
-#endif
+#endif // !LOGGER_H

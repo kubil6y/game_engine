@@ -1,5 +1,5 @@
-#ifndef TRANSFORMCOMPONENT_H
-#define TRANSFORMCOMPONENT_H
+#ifndef TRANSFORM_COMPONENT_H
+#define TRANSFORM_COMPONENT_H
 
 #include <glm/glm.hpp>
 
@@ -17,4 +17,4 @@ struct TransformComponent {
     }
 };
 
-#endif
+#endif // !TRANSFORM_COMPONENT_H

@@ -1,5 +1,5 @@
-#ifndef RENDERSYSTEM_H
-#define RENDERSYSTEM_H
+#ifndef RENDER_SYSTEM_H
+#define RENDER_SYSTEM_H
 
 #include "../AssetStore/AssetStore.h"
 #include "../Components/SpriteComponent.h"
@@ -67,4 +67,4 @@ public:
     }
 };
 
-#endif
+#endif // !RENDER_SYSTEM_H

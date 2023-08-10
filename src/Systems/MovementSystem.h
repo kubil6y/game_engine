@@ -1,5 +1,5 @@
-#ifndef MOVEMENTSYSTEM_H
-#define MOVEMENTSYSTEM_H
+#ifndef MOVEMENT_SYSTEM_H
+#define MOVEMENT_SYSTEM_H
 
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/TransformComponent.h"
@@ -24,4 +24,4 @@ public:
     }
 };
 
-#endif
+#endif // !MOVEMENT_SYSTEM_H

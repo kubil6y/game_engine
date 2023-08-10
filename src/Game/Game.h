@@ -34,4 +34,4 @@ public:
     int windowHeight;
 };
 
-#endif
+#endif // !GAME_H
