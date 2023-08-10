@@ -1,0 +1,5 @@
+libs/
+assets/
+.cache/
+*.o
+.vscode/

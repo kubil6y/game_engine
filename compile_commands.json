@@ -1,0 +1,18 @@
+[
+    {
+        "arguments": [
+            "g++",
+            "-c",
+            "-Wall",
+            "-Wfatal-errors",
+            "-std=c++17",
+            "-I./libs/",
+            "-I/usr/include/SDL2/",
+            "-o",
+            "gameengine",
+            "src/main.cpp"
+        ],
+        "directory": "/home/kubilay/cpp/2dgameengine",
+        "file": "src/main.cpp"
+    }
+]
