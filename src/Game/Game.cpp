@@ -124,7 +124,7 @@ void Game::LoadLevel(int level) {
 
     // Create an entity
     Entity chopper = m_registry->CreateEntity();
-    chopper.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0),
+    chopper.AddComponent<TransformComponent>(glm::vec2(10.0, 100.0),
                                              glm::vec2(1.0, 1.0), 0.0);
     chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
     chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1);
@@ -140,7 +140,7 @@ void Game::LoadLevel(int level) {
 
     Entity tank = m_registry->CreateEntity();
     tank.AddComponent<TransformComponent>(glm::vec2(300.0, 10.0),
-                                          glm::vec2(5.0, 5.0), 0.0);
+                                          glm::vec2(1.0, 1.0), 0.0);
     tank.AddComponent<RigidBodyComponent>(glm::vec2(-30.0, 0.0));
     tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 1);
     tank.AddComponent<BoxColliderComponent>(32, 32);
