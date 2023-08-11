@@ -1,11 +1,14 @@
 #include "Game.h"
+#include "../Components/AnimationComponent.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/SpriteComponent.h"
 #include "../Components/TransformComponent.h"
 #include "../ECS/ECS.h"
 #include "../Logger/Logger.h"
+#include "../Systems/AnimationSystem.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
+#include "SDL_video.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <fstream>
@@ -66,12 +69,17 @@ void Game::LoadLevel(int level) {
     // Add the sytems that need to be processed in our game
     m_registry->AddSystem<MovementSystem>();
     m_registry->AddSystem<RenderSystem>();
+    m_registry->AddSystem<AnimationSystem>();
 
     // Adding assets to the asset store
     m_assetStore->AddTexture(m_renderer, "tank-image",
                              "./assets/images/tank-panther-right.png");
     m_assetStore->AddTexture(m_renderer, "truck-image",
                              "./assets/images/truck-ford-right.png");
+    m_assetStore->AddTexture(m_renderer, "chopper-image",
+                             "./assets/images/chopper.png");
+    m_assetStore->AddTexture(m_renderer, "radar-image",
+                             "./assets/images/radar.png");
     m_assetStore->AddTexture(m_renderer, "tilemap-image",
                              "./assets/tilemaps/jungle.png");
 
@@ -105,6 +113,20 @@ void Game::LoadLevel(int level) {
     mapFile.close();
 
     // Create an entity
+    Entity chopper = m_registry->CreateEntity();
+    chopper.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0),
+                                             glm::vec2(1.0, 1.0), 0.0);
+    chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
+    chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1);
+    chopper.AddComponent<AnimationComponent>(2, 10, true);
+
+    Entity radar = m_registry->CreateEntity();
+    radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 80.0, 10.0),
+                                           glm::vec2(1.0, 1.0), 0.0);
+    radar.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
+    radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 2);
+    radar.AddComponent<AnimationComponent>(8, 5, true);
+
     Entity tank = m_registry->CreateEntity();
     tank.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0),
                                           glm::vec2(1.0, 1.0), 0.0);
@@ -141,6 +163,7 @@ void Game::Update() {
 
     // Invoke all the systems that need to update
     m_registry->GetSystem<MovementSystem>().Update(deltaTime);
+    m_registry->GetSystem<AnimationSystem>().Update();
 }
 
 void Game::Render() {
