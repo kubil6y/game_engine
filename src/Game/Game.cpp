@@ -6,10 +6,11 @@
 #include "../Components/TransformComponent.h"
 #include "../ECS/ECS.h"
 #include "../Logger/Logger.h"
+#include "../Systems//RenderColliderSystem.h"
 #include "../Systems/AnimationSystem.h"
+#include "../Systems/CollisionSystem.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
-#include "../Systems/CollisionSystem.h"
 #include "SDL_video.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -19,6 +20,7 @@
 
 Game::Game() {
     m_isRunning = false;
+    m_isDebug = false;
     m_registry = std::make_unique<Registry>();
     m_assetStore = std::make_unique<AssetStore>();
     Logger::Log("Game constructor called!");
@@ -63,6 +65,9 @@ void Game::ProcessInput() {
             if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
                 m_isRunning = false;
             }
+            if (sdlEvent.key.keysym.sym == SDLK_o) {
+                m_isDebug = !m_isDebug;
+            }
             break;
         }
     }
@@ -74,6 +79,7 @@ void Game::LoadLevel(int level) {
     m_registry->AddSystem<RenderSystem>();
     m_registry->AddSystem<AnimationSystem>();
     m_registry->AddSystem<CollisionSystem>();
+    m_registry->AddSystem<RenderColliderSystem>();
 
     // Adding assets to the asset store
     m_assetStore->AddTexture(m_renderer, "tank-image",
@@ -123,6 +129,7 @@ void Game::LoadLevel(int level) {
     chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
     chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1);
     chopper.AddComponent<AnimationComponent>(2, 10, true);
+    chopper.AddComponent<BoxColliderComponent>(32, 32);
 
     Entity radar = m_registry->CreateEntity();
     radar.AddComponent<TransformComponent>(glm::vec2(800.0 - 80.0, 10.0),
@@ -133,7 +140,7 @@ void Game::LoadLevel(int level) {
 
     Entity tank = m_registry->CreateEntity();
     tank.AddComponent<TransformComponent>(glm::vec2(300.0, 10.0),
-                                          glm::vec2(1.0, 1.0), 0.0);
+                                          glm::vec2(5.0, 5.0), 0.0);
     tank.AddComponent<RigidBodyComponent>(glm::vec2(-30.0, 0.0));
     tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 1);
     tank.AddComponent<BoxColliderComponent>(32, 32);
@@ -179,6 +186,10 @@ void Game::Render() {
 
     // Invoke all the systems that need to render
     m_registry->GetSystem<RenderSystem>().Update(m_renderer, m_assetStore);
+
+    if (m_isDebug) {
+        m_registry->GetSystem<RenderColliderSystem>().Update(m_renderer);
+    }
 
     SDL_RenderPresent(m_renderer);
 }

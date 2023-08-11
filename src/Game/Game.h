@@ -14,6 +14,7 @@ private:
     int           m_millisecsPreviousFrame = 0;
     SDL_Window*   m_window;
     SDL_Renderer* m_renderer;
+    bool          m_isDebug;
 
     std::unique_ptr<Registry>   m_registry;
     std::unique_ptr<AssetStore> m_assetStore;
