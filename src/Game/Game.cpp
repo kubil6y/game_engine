@@ -46,6 +46,7 @@ void Game::Initialize() {
         return;
     }
     SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN);
+    SDL_RenderSetLogicalSize(m_renderer, 800, 600);
     m_isRunning = true;
 }
 
@@ -121,7 +122,7 @@ void Game::LoadLevel(int level) {
     chopper.AddComponent<AnimationComponent>(2, 10, true);
 
     Entity radar = m_registry->CreateEntity();
-    radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 80.0, 10.0),
+    radar.AddComponent<TransformComponent>(glm::vec2(800.0 - 80.0, 10.0),
                                            glm::vec2(1.0, 1.0), 0.0);
     radar.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
     radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 2);
