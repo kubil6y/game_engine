@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "../Components/AnimationComponent.h"
+#include "../Components/BoxColliderComponent.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/SpriteComponent.h"
 #include "../Components/TransformComponent.h"
@@ -8,6 +9,7 @@
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
+#include "../Systems/CollisionSystem.h"
 #include "SDL_video.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -71,6 +73,7 @@ void Game::LoadLevel(int level) {
     m_registry->AddSystem<MovementSystem>();
     m_registry->AddSystem<RenderSystem>();
     m_registry->AddSystem<AnimationSystem>();
+    m_registry->AddSystem<CollisionSystem>();
 
     // Adding assets to the asset store
     m_assetStore->AddTexture(m_renderer, "tank-image",
@@ -129,16 +132,18 @@ void Game::LoadLevel(int level) {
     radar.AddComponent<AnimationComponent>(8, 5, true);
 
     Entity tank = m_registry->CreateEntity();
-    tank.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0),
+    tank.AddComponent<TransformComponent>(glm::vec2(300.0, 10.0),
                                           glm::vec2(1.0, 1.0), 0.0);
-    tank.AddComponent<RigidBodyComponent>(glm::vec2(40.0, 0.0));
+    tank.AddComponent<RigidBodyComponent>(glm::vec2(-30.0, 0.0));
     tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 1);
+    tank.AddComponent<BoxColliderComponent>(32, 32);
 
     Entity truck = m_registry->CreateEntity();
     truck.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0),
                                            glm::vec2(1.0, 1.0), 0.0);
     truck.AddComponent<RigidBodyComponent>(glm::vec2(20.0, 0.0));
     truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 2);
+    truck.AddComponent<BoxColliderComponent>(32, 32);
 }
 
 void Game::Setup() { LoadLevel(1); }
@@ -165,6 +170,7 @@ void Game::Update() {
     // Invoke all the systems that need to update
     m_registry->GetSystem<MovementSystem>().Update(deltaTime);
     m_registry->GetSystem<AnimationSystem>().Update();
+    m_registry->GetSystem<CollisionSystem>().Update();
 }
 
 void Game::Render() {
