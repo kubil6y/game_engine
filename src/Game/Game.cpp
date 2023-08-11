@@ -174,7 +174,7 @@ void Game::Update() {
     // created/deleted
     m_registry->Update();
 
-    // Invoke all the systems that need to update
+    // Invoke all the systems that needs to update
     m_registry->GetSystem<MovementSystem>().Update(deltaTime);
     m_registry->GetSystem<AnimationSystem>().Update();
     m_registry->GetSystem<CollisionSystem>().Update();

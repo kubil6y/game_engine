@@ -18,7 +18,7 @@ const unsigned int MAX_COMPONENTS = 32;
 // We use a bitset (1s and 0s) to keep track of which components an entity has,
 // and also helps keep track of which entities a system is interested in.
 ////////////////////////////////////////////////////////////////////////////////
-typedef std::bitset<MAX_COMPONENTS> Signature;
+using Signature = std::bitset<MAX_COMPONENTS>;
 
 struct IComponent {
 protected:
