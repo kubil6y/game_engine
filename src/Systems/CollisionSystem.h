@@ -4,6 +4,8 @@
 #include "../Components/BoxColliderComponent.h"
 #include "../Components/TransformComponent.h"
 #include "../ECS/ECS.h"
+#include "../EventBus/EventBus.h"
+#include "../Events/CollisionEvent.h"
 #include "../Logger/Logger.h"
 
 class CollisionSystem : public System {
@@ -13,7 +15,7 @@ public:
         RequireComponent<TransformComponent>();
     }
 
-    void Update() {
+    void Update(std::unique_ptr<EventBus>& eventBus) {
         auto entities = GetSystemEntities();
 
         for (auto i = entities.begin(); i != entities.end(); i++) {
@@ -32,7 +34,6 @@ public:
                 auto bTf = b.GetComponent<TransformComponent>();
                 auto bCollider = b.GetComponent<BoxColliderComponent>();
 
-                // TODO: include scale later
                 bool hasCollision = CheckAABCCollision(
                     aTf.position.x + aCollider.offset.x * aTf.scale.x,
                     aTf.position.y + aCollider.offset.y * aTf.scale.y,
@@ -48,7 +49,7 @@ public:
                                 " is colliding with entity " +
                                 std::to_string(b.GetId()));
 
-                    // TODO: emit an event
+                    eventBus->EmitEvent<CollisionEvent>(a, b);
                 }
             }
         }

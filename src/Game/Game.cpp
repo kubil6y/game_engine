@@ -9,6 +9,7 @@
 #include "../Systems//RenderColliderSystem.h"
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/CollisionSystem.h"
+#include "../Systems/DamageSystem.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
 #include "SDL_video.h"
@@ -23,6 +24,7 @@ Game::Game() {
     m_isDebug = false;
     m_registry = std::make_unique<Registry>();
     m_assetStore = std::make_unique<AssetStore>();
+    m_eventBus = std::make_unique<EventBus>();
     Logger::Log("Game constructor called!");
 }
 
@@ -80,6 +82,7 @@ void Game::LoadLevel(int level) {
     m_registry->AddSystem<AnimationSystem>();
     m_registry->AddSystem<CollisionSystem>();
     m_registry->AddSystem<RenderColliderSystem>();
+    m_registry->AddSystem<DamageSystem>();
 
     // Adding assets to the asset store
     m_assetStore->AddTexture(m_renderer, "tank-image",
@@ -170,6 +173,12 @@ void Game::Update() {
     // Store the "previous" frame time
     m_millisecsPreviousFrame = SDL_GetTicks();
 
+    // Reset all events handlers for the current frame
+    m_eventBus->Reset();
+
+    // Perform the subscription of the events for all systems
+    m_registry->GetSystem<DamageSystem>().SubscribeToEvents(m_eventBus);
+
     // Update the registry to process the entities that are waiting to be
     // created/deleted
     m_registry->Update();
@@ -177,7 +186,7 @@ void Game::Update() {
     // Invoke all the systems that needs to update
     m_registry->GetSystem<MovementSystem>().Update(deltaTime);
     m_registry->GetSystem<AnimationSystem>().Update();
-    m_registry->GetSystem<CollisionSystem>().Update();
+    m_registry->GetSystem<CollisionSystem>().Update(m_eventBus);
 }
 
 void Game::Render() {
