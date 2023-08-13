@@ -1,15 +1,18 @@
 #include "Game.h"
 #include "../Components/AnimationComponent.h"
 #include "../Components/BoxColliderComponent.h"
+#include "../Components/KeyboardControlledComponent.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/SpriteComponent.h"
 #include "../Components/TransformComponent.h"
 #include "../ECS/ECS.h"
+#include "../Events/KeyPressedEvent.h"
 #include "../Logger/Logger.h"
 #include "../Systems//RenderColliderSystem.h"
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/CollisionSystem.h"
 #include "../Systems/DamageSystem.h"
+#include "../Systems/KeyboardControlSystem.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
 #include "SDL_video.h"
@@ -64,6 +67,8 @@ void Game::ProcessInput() {
             m_isRunning = false;
             break;
         case SDL_KEYDOWN:
+            m_eventBus->EmitEvent<KeyPressedEvent>(sdlEvent.key.keysym.sym);
+
             if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
                 m_isRunning = false;
             }
@@ -83,6 +88,7 @@ void Game::LoadLevel(int level) {
     m_registry->AddSystem<CollisionSystem>();
     m_registry->AddSystem<RenderColliderSystem>();
     m_registry->AddSystem<DamageSystem>();
+    m_registry->AddSystem<KeyboardControlSystem>();
 
     // Adding assets to the asset store
     m_assetStore->AddTexture(m_renderer, "tank-image",
@@ -90,7 +96,7 @@ void Game::LoadLevel(int level) {
     m_assetStore->AddTexture(m_renderer, "truck-image",
                              "./assets/images/truck-ford-right.png");
     m_assetStore->AddTexture(m_renderer, "chopper-image",
-                             "./assets/images/chopper.png");
+                             "./assets/images/chopper-spritesheet.png");
     m_assetStore->AddTexture(m_renderer, "radar-image",
                              "./assets/images/radar.png");
     m_assetStore->AddTexture(m_renderer, "tilemap-image",
@@ -126,13 +132,27 @@ void Game::LoadLevel(int level) {
     mapFile.close();
 
     // Create an entity
-    Entity chopper = m_registry->CreateEntity();
-    chopper.AddComponent<TransformComponent>(glm::vec2(10.0, 100.0),
-                                             glm::vec2(1.0, 1.0), 0.0);
-    chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
-    chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1);
-    chopper.AddComponent<AnimationComponent>(2, 10, true);
-    chopper.AddComponent<BoxColliderComponent>(32, 32);
+    Entity chopperA = m_registry->CreateEntity();
+    chopperA.AddComponent<TransformComponent>(glm::vec2(10.0, 100.0),
+                                              glm::vec2(1.0, 1.0), 0.0);
+    chopperA.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
+    chopperA.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1);
+    chopperA.AddComponent<AnimationComponent>(2, 10, true);
+    chopperA.AddComponent<BoxColliderComponent>(32, 32);
+    chopperA.AddComponent<KeyboardControlledComponent>(
+        glm::vec2(0, -20), glm::vec2(20, 0), glm::vec2(0, 20),
+        glm::vec2(-20, 0));
+
+    Entity chopperB = m_registry->CreateEntity();
+    chopperB.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0),
+                                              glm::vec2(1.0, 1.0), 0.0);
+    chopperB.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
+    chopperB.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1);
+    chopperB.AddComponent<AnimationComponent>(2, 10, true);
+    chopperB.AddComponent<BoxColliderComponent>(32, 32);
+    chopperB.AddComponent<KeyboardControlledComponent>(
+        glm::vec2(0, -40), glm::vec2(40, 0), glm::vec2(0, 40),
+        glm::vec2(-40, 0));
 
     Entity radar = m_registry->CreateEntity();
     radar.AddComponent<TransformComponent>(glm::vec2(800.0 - 80.0, 10.0),
@@ -170,7 +190,7 @@ void Game::Update() {
     // The difference in ticks since the last frame, converted to seconds
     double deltaTime = (SDL_GetTicks() - m_millisecsPreviousFrame) / 1000.0;
 
-    // Store the "previous" frame time
+    // Store the dprevious" frame time
     m_millisecsPreviousFrame = SDL_GetTicks();
 
     // Reset all events handlers for the current frame
@@ -178,9 +198,11 @@ void Game::Update() {
 
     // Perform the subscription of the events for all systems
     m_registry->GetSystem<DamageSystem>().SubscribeToEvents(m_eventBus);
+    m_registry->GetSystem<KeyboardControlSystem>().SubscribeToEvents(
+        m_eventBus);
 
-    // Update the registry to process the entities that are waiting to be
-    // created/deleted
+    // Update the registry to process the entities that are waiting to
+    // be created/deleted
     m_registry->Update();
 
     // Invoke all the systems that needs to update
