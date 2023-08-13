@@ -15,8 +15,8 @@ public:
         RequireComponent<SpriteComponent>();
     }
 
-    void Update(SDL_Renderer*                renderer,
-                std::unique_ptr<AssetStore>& assetStore) {
+    void Update(SDL_Renderer* renderer, std::unique_ptr<AssetStore>& assetStore,
+                const SDL_Rect& camera) {
         // Create a vector with both Sprite and Transform components of all
         // entities
         struct RenderableEntity {
@@ -45,7 +45,7 @@ public:
 
         // Loop all entities that the system is interested in
         for (auto entity : renderableEntities) {
-            const auto transform = entity.transformComponent;
+            const auto tf = entity.transformComponent;
             const auto sprite = entity.spriteComponent;
 
             // Set the source rectangle of our original sprite texture
@@ -53,15 +53,14 @@ public:
 
             // Set the destination rectangle with the x,y position to be
             // rendered
-            SDL_Rect dstRect = {
-                static_cast<int>(transform.position.x),
-                static_cast<int>(transform.position.y),
-                static_cast<int>(sprite.width * transform.scale.x),
-                static_cast<int>(sprite.height * transform.scale.y)};
+            SDL_Rect dstRect = {static_cast<int>(tf.position.x - camera.x),
+                                static_cast<int>(tf.position.y - camera.y),
+                                static_cast<int>(sprite.width * tf.scale.x),
+                                static_cast<int>(sprite.height * tf.scale.y)};
 
             // Draw the texture on the destination renderer
             SDL_RenderCopyEx(renderer, assetStore->GetTexture(sprite.assetId),
-                             &srcRect, &dstRect, transform.rotation, NULL,
+                             &srcRect, &dstRect, tf.rotation, NULL,
                              SDL_FLIP_NONE);
         }
     }

@@ -50,8 +50,6 @@ public:
             }
         }
     }
-
-    void Update() {}
 };
 
 #endif // !KEYBOARD_CONTROL_SYSTEM_H
