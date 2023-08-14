@@ -171,6 +171,8 @@ void Game::LoadLevel(int level) {
         glm::vec2(0, -120), glm::vec2(120, 0), glm::vec2(0, 120),
         glm::vec2(-120, 0));
     chopper.AddComponent<HealthComponent>(100);
+    chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(150.0, 150.0), 0,
+                                                     10000, 0, true);
 
     Entity radar = m_registry->CreateEntity();
     radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 80.0, 10.0),
@@ -224,6 +226,7 @@ void Game::Update() {
     m_registry->GetSystem<DamageSystem>().SubscribeToEvents(m_eventBus);
     m_registry->GetSystem<KeyboardControlSystem>().SubscribeToEvents(
         m_eventBus);
+    m_registry->GetSystem<ProjectileEmitSystem>().SubscribeToEvents(m_eventBus);
 
     // Update the registry to process the entities that are waiting to
     // be created/deleted
