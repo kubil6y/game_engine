@@ -3,6 +3,7 @@
 #include "../Components/BoxColliderComponent.h"
 #include "../Components/CameraFollowComponent.h"
 #include "../Components/KeyboardControlledComponent.h"
+#include "../Components/ProjectileEmitterComponent.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/SpriteComponent.h"
 #include "../Components/TransformComponent.h"
@@ -15,6 +16,7 @@
 #include "../Systems/DamageSystem.h"
 #include "../Systems/KeyboardControlSystem.h"
 #include "../Systems/MovementSystem.h"
+#include "../Systems/ProjectileEmitSystem.h"
 #include "../Systems/RenderColliderSystem.h"
 #include "../Systems/RenderSystem.h"
 #include "SDL_video.h"
@@ -104,6 +106,7 @@ void Game::LoadLevel(int level) {
     m_registry->AddSystem<DamageSystem>();
     m_registry->AddSystem<KeyboardControlSystem>();
     m_registry->AddSystem<CameraMovementSystem>();
+    m_registry->AddSystem<ProjectileEmitSystem>();
 
     // Adding assets to the asset store
     m_assetStore->AddTexture(m_renderer, "tank-image",
@@ -114,6 +117,8 @@ void Game::LoadLevel(int level) {
                              "./assets/images/chopper-spritesheet.png");
     m_assetStore->AddTexture(m_renderer, "radar-image",
                              "./assets/images/radar.png");
+    m_assetStore->AddTexture(m_renderer, "bullet-image",
+                             "./assets/images/bullet.png");
     m_assetStore->AddTexture(m_renderer, "tilemap-image",
                              "./assets/tilemaps/jungle.png");
 
@@ -171,18 +176,22 @@ void Game::LoadLevel(int level) {
     radar.AddComponent<AnimationComponent>(8, 5, true);
 
     Entity tank = m_registry->CreateEntity();
-    tank.AddComponent<TransformComponent>(glm::vec2(300.0, 10.0),
+    tank.AddComponent<TransformComponent>(glm::vec2(500.0, 10.0),
                                           glm::vec2(1.0, 1.0), 0.0);
-    tank.AddComponent<RigidBodyComponent>(glm::vec2(-30.0, 0.0));
+    tank.AddComponent<RigidBodyComponent>(glm::vec2(0));
     tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 1);
     tank.AddComponent<BoxColliderComponent>(32, 32);
+    tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100.0, 0.0), 5000,
+                                                  10000, 0, false);
 
     Entity truck = m_registry->CreateEntity();
-    truck.AddComponent<TransformComponent>(glm::vec2(10.0, 150.0),
-                                           glm::vec2(3.0, 3.0), 0.0);
-    truck.AddComponent<RigidBodyComponent>(glm::vec2(20.0, 0.0));
+    truck.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0),
+                                           glm::vec2(1.0, 1.0), 0.0);
+    truck.AddComponent<RigidBodyComponent>(glm::vec2(0));
     truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 2);
     truck.AddComponent<BoxColliderComponent>(32, 32);
+    truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0, 100.0), 2000,
+                                                  10000, 0, false);
 }
 
 void Game::Setup() { LoadLevel(1); }
@@ -219,6 +228,7 @@ void Game::Update() {
     m_registry->GetSystem<AnimationSystem>().Update();
     m_registry->GetSystem<CollisionSystem>().Update(m_eventBus);
     m_registry->GetSystem<CameraMovementSystem>().Update(m_camera);
+    m_registry->GetSystem<ProjectileEmitSystem>().Update(m_registry);
 }
 
 void Game::Render() {
