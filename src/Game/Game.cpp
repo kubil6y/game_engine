@@ -141,7 +141,8 @@ void Game::LoadLevel(int level) {
                           y * (tileScale * tileSize)),
                 glm::vec2(tileScale, tileScale), 0.0);
             tile.AddComponent<SpriteComponent>("tilemap-image", tileSize,
-                                               tileSize, 0, srcRectX, srcRectY);
+                                               tileSize, 0, false, srcRectX,
+                                               srcRectY);
         }
     }
     mapFile.close();
@@ -166,7 +167,7 @@ void Game::LoadLevel(int level) {
     radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 80.0, 10.0),
                                            glm::vec2(1.0, 1.0), 0.0);
     radar.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
-    radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 2);
+    radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 2, true);
     radar.AddComponent<AnimationComponent>(8, 5, true);
 
     Entity tank = m_registry->CreateEntity();

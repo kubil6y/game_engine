@@ -25,7 +25,6 @@ public:
         };
 
         std::vector<RenderableEntity> renderableEntities;
-
         for (auto entity : GetSystemEntities()) {
             RenderableEntity renderableEntity;
             renderableEntity.spriteComponent =
@@ -45,16 +44,20 @@ public:
 
         // Loop all entities that the system is interested in
         for (auto entity : renderableEntities) {
-            const auto tf = entity.transformComponent;
-            const auto sprite = entity.spriteComponent;
+            const auto& tf = entity.transformComponent;
+            const auto& sprite = entity.spriteComponent;
 
             // Set the source rectangle of our original sprite texture
             SDL_Rect srcRect = sprite.srcRect;
 
             // Set the destination rectangle with the x,y position to be
             // rendered
-            SDL_Rect dstRect = {static_cast<int>(tf.position.x - camera.x),
-                                static_cast<int>(tf.position.y - camera.y),
+            // optimization: instead of ternary operator
+            int cameraOffsetX = !sprite.isFixed * camera.x;
+            int cameraOffsetY = !sprite.isFixed * camera.y;
+
+            SDL_Rect dstRect = {static_cast<int>(tf.position.x - cameraOffsetX),
+                                static_cast<int>(tf.position.y - cameraOffsetY),
                                 static_cast<int>(sprite.width * tf.scale.x),
                                 static_cast<int>(sprite.height * tf.scale.y)};
 
