@@ -52,7 +52,7 @@ public:
 
             // Set the destination rectangle with the x,y position to be
             // rendered
-            // optimization: instead of ternary operator
+            // Optimization: instead of ternary operator
             int cameraOffsetX = !sprite.isFixed * camera.x;
             int cameraOffsetY = !sprite.isFixed * camera.y;
 

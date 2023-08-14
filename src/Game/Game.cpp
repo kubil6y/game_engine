@@ -178,8 +178,8 @@ void Game::LoadLevel(int level) {
     tank.AddComponent<BoxColliderComponent>(32, 32);
 
     Entity truck = m_registry->CreateEntity();
-    truck.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0),
-                                           glm::vec2(1.0, 1.0), 0.0);
+    truck.AddComponent<TransformComponent>(glm::vec2(10.0, 150.0),
+                                           glm::vec2(3.0, 3.0), 0.0);
     truck.AddComponent<RigidBodyComponent>(glm::vec2(20.0, 0.0));
     truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 2);
     truck.AddComponent<BoxColliderComponent>(32, 32);
@@ -230,7 +230,8 @@ void Game::Render() {
                                                  m_camera);
 
     if (m_isDebug) {
-        m_registry->GetSystem<RenderColliderSystem>().Update(m_renderer);
+        m_registry->GetSystem<RenderColliderSystem>().Update(m_renderer,
+                                                             m_camera);
     }
 
     SDL_RenderPresent(m_renderer);
