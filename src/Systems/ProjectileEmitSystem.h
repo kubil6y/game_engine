@@ -2,6 +2,7 @@
 #define PROJECTILE_EMIT_SYSTEM_H
 
 #include "../Components/BoxColliderComponent.h"
+#include "../Components/ProjectileComponent.h"
 #include "../Components/ProjectileEmitterComponent.h"
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/SpriteComponent.h"
@@ -19,18 +20,18 @@ public:
 
     void Update(std::unique_ptr<Registry>& registry) {
         for (auto entity : GetSystemEntities()) {
-            auto& projectileEmitter =
-                entity.GetComponent<ProjectileEmitterComponent>();
             const auto& tf = entity.GetComponent<TransformComponent>();
+            auto&       projectileEmitter =
+                entity.GetComponent<ProjectileEmitterComponent>();
 
             // Check if its time to re-emit a new projectile
             if (static_cast<int>(SDL_GetTicks()) -
                     projectileEmitter.lastEmissionTime >
                 projectileEmitter.repeatFrequency) {
+                // Calculate projectile position
                 glm::vec2 projectilePos = tf.position;
                 if (entity.HasComponent<SpriteComponent>()) {
                     const auto& sprite = entity.GetComponent<SpriteComponent>();
-
                     projectilePos = glm::vec2(
                         tf.position.x +
                             static_cast<int>(sprite.width / 2) * tf.scale.x,
@@ -46,6 +47,10 @@ public:
                 projectile.AddComponent<SpriteComponent>("bullet-image", 4, 4,
                                                          4);
                 projectile.AddComponent<BoxColliderComponent>(4, 4);
+                projectile.AddComponent<ProjectileComponent>(
+                    projectileEmitter.isFriendly,
+                    projectileEmitter.hitPercentDamage,
+                    projectileEmitter.projectileDuration);
 
                 projectileEmitter.lastEmissionTime = SDL_GetTicks();
             }
