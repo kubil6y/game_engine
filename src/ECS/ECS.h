@@ -61,6 +61,11 @@ public:
     template <typename TComponent>
     TComponent& GetComponent() const;
 
+    void Tag(const std::string& tag) const;
+    bool HasTag(const std::string& tag) const;
+    void Group(const std::string& group) const;
+    bool BelongsToGroup(const std::string& group) const;
+
     // Hold a pointer to the entity's owner registry
     class Registry* registry;
 };
@@ -111,13 +116,13 @@ public:
     virtual ~Pool() = default;
 
     bool isEmpty() const { return m_data.empty(); }
-    int GetSize() const { return m_data.size(); }
+    int  GetSize() const { return m_data.size(); }
     void Resize(int n) { m_data.resize(n); }
     void Clear() { m_data.clear(); }
     void Add(T object) { m_data.push_back(object); }
     void Set(int index, T object) { m_data[index] = object; }
-    T& Get(int index) { return static_cast<T&>(m_data[index]); }
-    T& operator[](unsigned int index) { return m_data[index]; }
+    T&   Get(int index) { return static_cast<T&>(m_data[index]); }
+    T&   operator[](unsigned int index) { return m_data[index]; }
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Registry
@@ -147,12 +152,19 @@ private:
     std::set<Entity> m_entitiesToBeAdded;
     std::set<Entity> m_entitiesToBeKilled;
 
+    // Entity tags (one tag name per entity)
+    std::unordered_map<std::string, Entity> m_entityPerTag;
+    std::unordered_map<int, std::string>    m_tagPerEntity;
+
+    // Entity groups (a set of entities per group name)
+    std::unordered_map<std::string, std::set<Entity>> m_entitiesPerGroup;
+    std::unordered_map<int, std::string>              m_groupPerEntity;
+
     // List of available free entity ids that were previously removed
     std::deque<int> m_freeIds;
 
 public:
     Registry() { Logger::Log("Registry constructor called"); }
-
     ~Registry() { Logger::Log("Registry destructor called"); }
 
     // The registry Update() finally processes the entities that are waiting to
@@ -162,6 +174,18 @@ public:
     // Entity management
     Entity CreateEntity();
     void   KillEntity(Entity entity);
+
+    // Tag management
+    void   TagEntity(Entity entity, const std::string& tag);
+    bool   EntityHasTag(Entity entity, const std::string& tag) const;
+    Entity GetEntityByTag(const std::string& tag) const;
+    void   RemoveEntityTag(Entity entity);
+
+    // Group management
+    void GroupEntity(Entity entity, const std::string& group);
+    bool EntityBelongsToGroup(Entity entity, const std::string& group) const;
+    void RemoveEntityGroup(Entity entity);
+    std::vector<Entity> GetEntitiesByGroup(const std::string& group) const;
 
     // Component management
     template <typename TComponent, typename... TArgs>
