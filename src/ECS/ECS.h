@@ -22,7 +22,7 @@ using Signature = std::bitset<MAX_COMPONENTS>;
 
 struct IComponent {
 protected:
-    static int nextId;
+    static int s_nextId;
 };
 
 // Used to assign a unique id to a component type
@@ -31,7 +31,7 @@ class Component : public IComponent {
 public:
     // Returns the unique id of Component<T>
     static int GetId() {
-        static auto id = nextId++;
+        static auto id = s_nextId++;
         return id;
     }
 };
@@ -111,22 +111,14 @@ public:
     virtual ~Pool() = default;
 
     bool isEmpty() const { return m_data.empty(); }
-
     int GetSize() const { return m_data.size(); }
-
     void Resize(int n) { m_data.resize(n); }
-
     void Clear() { m_data.clear(); }
-
     void Add(T object) { m_data.push_back(object); }
-
     void Set(int index, T object) { m_data[index] = object; }
-
     T& Get(int index) { return static_cast<T&>(m_data[index]); }
-
     T& operator[](unsigned int index) { return m_data[index]; }
 };
-
 ////////////////////////////////////////////////////////////////////////////////
 // Registry
 ////////////////////////////////////////////////////////////////////////////////

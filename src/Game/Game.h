@@ -34,10 +34,10 @@ public:
     void Render();
     void Destroy();
 
-    static int windowWidth;
-    static int windowHeight;
-    static int mapWidth;
-    static int mapHeight;
+    static int s_windowWidth;
+    static int s_windowHeight;
+    static int s_mapWidth;
+    static int s_mapHeight;
 };
 
 #endif // !GAME_H

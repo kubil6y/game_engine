@@ -2,7 +2,7 @@
 #include "../Logger/Logger.h"
 #include <algorithm>
 
-int IComponent::nextId = 0;
+int IComponent::s_nextId = 0;
 
 int  Entity::GetId() const { return id; }
 void Entity::Kill() { registry->KillEntity(*this); }

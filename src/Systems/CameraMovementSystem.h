@@ -22,15 +22,15 @@ public:
             const auto& tf = entity.GetComponent<TransformComponent>();
 
             if (tf.position.x + static_cast<int>(camera.w / 2) <
-                Game::mapWidth) {
+                Game::s_mapWidth) {
                 camera.x =
-                    tf.position.x - static_cast<int>(Game::windowWidth / 2);
+                    tf.position.x - static_cast<int>(Game::s_windowWidth / 2);
             }
 
             if (tf.position.y + static_cast<int>(camera.h / 2) <
-                Game::mapHeight) {
+                Game::s_mapHeight) {
                 camera.y =
-                    tf.position.y - static_cast<int>(Game::windowHeight / 2);
+                    tf.position.y - static_cast<int>(Game::s_windowHeight / 2);
             }
 
             camera.x = glm::clamp(camera.x, 0, camera.w);

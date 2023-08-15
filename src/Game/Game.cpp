@@ -28,10 +28,10 @@
 #include <glm/glm.hpp>
 #include <iostream>
 
-int Game::windowWidth;
-int Game::windowHeight;
-int Game::mapWidth;
-int Game::mapHeight;
+int Game::s_windowWidth;
+int Game::s_windowHeight;
+int Game::s_mapWidth;
+int Game::s_mapHeight;
 
 Game::Game() {
     m_isRunning = false;
@@ -52,12 +52,12 @@ void Game::Initialize() {
 
     SDL_DisplayMode displayMode;
     SDL_GetCurrentDisplayMode(0, &displayMode);
-    windowWidth = 800;
-    windowHeight = 600;
+    s_windowWidth = 800;
+    s_windowHeight = 600;
 
     m_window =
         SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                         windowWidth, windowHeight, SDL_WINDOW_BORDERLESS);
+                         s_windowWidth, s_windowHeight, SDL_WINDOW_BORDERLESS);
     if (!m_window) {
         Logger::Err("Error creating SDL window.");
         return;
@@ -69,10 +69,10 @@ void Game::Initialize() {
         return;
     }
     SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-    SDL_RenderSetLogicalSize(m_renderer, windowWidth, windowHeight);
+    SDL_RenderSetLogicalSize(m_renderer, s_windowWidth, s_windowHeight);
 
     // Initialize the camera view with the entire screen area
-    m_camera = {0, 0, windowWidth, windowHeight};
+    m_camera = {0, 0, s_windowWidth, s_windowHeight};
 
     m_isRunning = true;
 }
@@ -155,8 +155,8 @@ void Game::LoadLevel(int level) {
     }
     mapFile.close();
 
-    mapWidth = mapNumCols * tileSize * tileScale;
-    mapHeight = mapNumRows * tileSize * tileScale;
+    s_mapWidth = mapNumCols * tileSize * tileScale;
+    s_mapHeight = mapNumRows * tileSize * tileScale;
 
     // Create an entity
     Entity chopper = m_registry->CreateEntity();
@@ -175,7 +175,7 @@ void Game::LoadLevel(int level) {
                                                      10000, 0, true);
 
     Entity radar = m_registry->CreateEntity();
-    radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 80.0, 10.0),
+    radar.AddComponent<TransformComponent>(glm::vec2(s_windowWidth - 80.0, 10.0),
                                            glm::vec2(1.0, 1.0), 0.0);
     radar.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
     radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 2, true);
