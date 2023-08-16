@@ -73,6 +73,7 @@ public:
                     }
 
                     Entity projectile = entity.registry->CreateEntity();
+                    projectile.Group("projectiles");
                     projectile.AddComponent<TransformComponent>(
                         projectilePos, glm::vec2(1.0, 1.0), 0.0);
                     projectile.AddComponent<RigidBodyComponent>(
@@ -115,6 +116,7 @@ public:
                 }
 
                 Entity projectile = registry->CreateEntity();
+                projectile.Group("projectiles");
                 projectile.AddComponent<TransformComponent>(
                     projectilePos, glm::vec2(1.0, 1.0));
                 projectile.AddComponent<RigidBodyComponent>(
