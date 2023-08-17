@@ -66,10 +66,10 @@ public:
         auto projectileComponent =
             projectile.GetComponent<ProjectileComponent>();
 
-
         if (projectileComponent.isFriendly) {
             auto& enemyHealth = enemy.GetComponent<HealthComponent>();
-            enemyHealth.healthPercentage -= projectileComponent.hitPercentDamage;
+            enemyHealth.healthPercentage -=
+                projectileComponent.hitPercentDamage;
 
             // FIXME: this should be an event!
             if (enemyHealth.healthPercentage <= 0) {
